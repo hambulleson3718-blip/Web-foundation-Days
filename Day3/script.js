@@ -1,120 +1,105 @@
-// Starting notes
-const notes = [
-    {
-        id: 1,
-        title: "Learn JavaScript",
-        body: "Practice arrays and functions",
-        tags: ["javascript", "coding"],
-        pinned: true
-    },
-    {
-        id: 2,
-        title: "HTML Practice",
-        body: "Build a simple webpage",
-        tags: ["html", "web"],
-        pinned: false
-    },
-    {
-        id: 3,
-        title: "CSS Basics",
-        body: "Learn selectors and styling",
-        tags: ["css", "web"],
-        pinned: false
-    }
+let notes = [
+  { id: 1, text: "Buy milk and bread", category: "personal" },
+  { id: 2, text: "Finish the Day 3 assignment", category: "study" },
+  { id: 3, text: "Email the project report to Grace", category: "work" },
+  { id: 4, text: "Revise JavaScript arrays", category: "study" },
+  { id: 5, text: "Call mum", category: "personal" },
 ];
 
+const CATEGORIES = ["personal", "work", "study"];
 
-// 1. Find a note by ID
-function findNoteById(id) {
-    return notes.find(note => note.id === id);
+function searchNotes(word) {
+  const search = word.toLowerCase();
+  return notes.filter((note) => note.text.toLowerCase().includes(search));
 }
 
+function longestNote() {
+  if (notes.length === 0) return null;
 
-// 2. Get pinned notes
-function getPinnedNotes() {
-    return notes.filter(note => note.pinned === true);
-}
+  let longest = notes[0];
 
-
-// 3. Get notes by tag
-function getNotesByTag(tag) {
-    return notes.filter(note =>
-        note.tags.includes(tag)
-    );
-}
-
-
-// 4. Add a new note
-function addNote(title, body, tags = [], pinned = false) {
-    const newNote = {
-        id: notes.length + 1,
-        title: title,
-        body: body,
-        tags: tags,
-        pinned: pinned
-    };
-
-    notes.push(newNote);
-    return newNote;
-}
-
-
-// 5. Toggle pinned status
-function togglePinned(id) {
-    const note = findNoteById(id);
-
-    if (note) {
-        note.pinned = !note.pinned;
-        return note;
+  for (const note of notes) {
+    if (note.text.length > longest.text.length) {
+      longest = note;
     }
+  }
 
-    return undefined;
+  return longest;
 }
 
+function countByCategory() {
+  const counts = {
+    personal: 0,
+    work: 0,
+    study: 0
+  };
 
-// 6. Delete a note by ID
-function deleteNote(id) {
-    const index = notes.findIndex(note => note.id === id);
+  notes.forEach((note) => {
+    counts[note.category]++;
+  });
 
-    if (index !== -1) {
-        return notes.splice(index, 1)[0];
-    }
-
-    return undefined;
+  return counts;
 }
 
+function getSummary() {
+  const counts = countByCategory();
+  const word = notes.length === 1 ? "note" : "notes";
 
-// TESTS
+  return (
+    `${notes.length} ${word}: ` +
+    `${counts.personal} personal, ${counts.work} work, ${counts.study} study.`
+  );
+}
 
-// Test 1: Find note by ID
-console.log("Find note:", findNoteById(1));
-console.log("Find missing note:", findNoteById(99));
+function isDuplicate(text) {
+  const cleaned = text.trim().toLowerCase();
 
-// Test 2: Get pinned notes
-console.log("Pinned notes:", getPinnedNotes());
-console.log("Pinned notes after checking:", getPinnedNotes());
+  return notes.some((note) => note.text.toLowerCase() === cleaned);
+}
 
-// Test 3: Get notes by tag
-console.log("JavaScript notes:", getNotesByTag("javascript"));
-console.log("Web notes:", getNotesByTag("web"));
+function addNote(text, category) {
+  const cleaned = text.trim();
 
-// Test 4: Add note
-console.log(
-    "Added note:",
-    addNote(
-        "JavaScript Functions",
-        "Practice array methods",
-        ["javascript", "practice"],
-        false
-    )
-);
+  if (cleaned.length === 0 || cleaned.length > 200) {
+    console.log("Rejected: a note must be 1-200 characters.");
+    return false;
+  }
 
-console.log("All notes after adding:", notes);
+  if (isDuplicate(cleaned)) {
+    console.log(`Rejected: "${cleaned}" already exists.`);
+    return false;
+  }
 
-// Test 5: Toggle pinned
-console.log("Toggle note 2:", togglePinned(2));
-console.log("Toggle note 2 again:", togglePinned(2));
+  if (!CATEGORIES.includes(category)) {
+    console.log(`Rejected: "${category}" is not a valid category.`);
+    return false;
+  }
 
-// Test 6: Delete note
-console.log("Deleted note:", deleteNote(3));
-console.log("Notes after deletion:", notes);
+  notes.push({
+    id: Date.now(),
+    text: cleaned,
+    category: category
+  });
+
+  console.log(`Added: "${cleaned}" (${category})`);
+  return true;
+}
+
+console.log(searchNotes("revise"));
+console.log(searchNotes("BREAD"));
+console.log(searchNotes("holiday"));
+
+console.log(longestNote().text);
+
+console.log(countByCategory());
+console.log(getSummary());
+
+console.log(isDuplicate(" call MUM "));
+console.log(isDuplicate("Call dad"));
+
+console.log(addNote("Read chapter 4", "study"));
+console.log(addNote("call mum", "personal"));
+console.log(addNote(" ", "work"));
+console.log(addNote("Plan trip", "holiday"));
+
+console.log(getSummary());
