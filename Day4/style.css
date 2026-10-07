@@ -1,0 +1,57 @@
+:root {
+    --background-color: white;
+    --text-color: black;
+    --textarea-background: white;
+    --border-color: #cccccc;
+    --button-background: #eeeeee;
+    --button-text: black;
+}
+
+body.dark {
+    --background-color: #1e1e1e;
+    --text-color: white;
+    --textarea-background: #2b2b2b;
+    --border-color: #555555;
+    --button-background: #444444;
+    --button-text: white;
+}
+
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-family: Arial, sans-serif;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: var(--textarea-background);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: var(--button-background);
+    color: var(--button-text);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    margin-right: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.warning {
+    color: orange;
+}
+
+.over {
+    color: red;
+    font-weight: bold;
+}
